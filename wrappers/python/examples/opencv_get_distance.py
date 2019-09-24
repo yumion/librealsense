@@ -22,10 +22,12 @@ cap.start()
 
 
 while True:
-    ret, frames = cap.read(is_filtered=True)
+    ret, frames = cap.read(is_filtered=False)
     color_frame = frames[0]
     depth_frame = frames[1]
     # print(color_frame.shape, depth_frame.shape)
+    # ヒートマップに変換
+    # depth_colormap = cv2.applyColorMap(cv2.convertScaleAbs(np.array(cap.depth_frame.get_data()), alpha=0.08), cv2.COLORMAP_JET)
     # レンダリング
     images = np.hstack((color_frame, depth_frame))
     cv2.namedWindow('RealSense', cv2.WINDOW_AUTOSIZE)

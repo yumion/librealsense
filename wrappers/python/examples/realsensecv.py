@@ -22,7 +22,7 @@ class RealsenseCapture:
         self.pipeline.start(self.config)
         print('pipline start')
 
-    def read(self, is_filtered=True, raw_frame=False):
+    def read(self, is_filtered=False, raw_frame=False):
         # Flag capture available
         ret = True
         # get frames
