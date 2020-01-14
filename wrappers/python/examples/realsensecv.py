@@ -1,6 +1,7 @@
 # coding: utf-8
 import pyrealsense2 as rs
 import numpy as np
+import cv2
 
 
 class RealsenseCapture:
@@ -11,16 +12,18 @@ class RealsenseCapture:
         self.FPS = 30
         # Configure depth and color streams
         self.config = rs.config()
+        # Pipeline streaming
+        self.pipeline = rs.pipeline()
+
+    def start(self):
+        # Config
         self.config.enable_stream(rs.stream.color, self.WIDTH, self.HEGIHT, rs.format.bgr8, self.FPS)
         self.config.enable_stream(rs.stream.depth, self.WIDTH, self.HEGIHT, rs.format.z16, self.FPS)
         # Align the angle of view
         self.align = rs.align(rs.stream.color)
-
-    def start(self):
         # Start streaming
-        self.pipeline = rs.pipeline()
         self.pipeline.start(self.config)
-        print('pipline start')
+        print('pipeline start')
 
     def read(self, is_filtered=False, raw_frame=False):
         # Flag capture available
@@ -43,16 +46,17 @@ class RealsenseCapture:
             # Get filtered depth frame
             depth_frame = self.filtering(self.depth_frame) if is_filtered else self.depth_frame
             # Express depth frame by heatmap
-            depth_colorized_frame = rs.colorizer().colorize(depth_frame)
+            # depth_colorized_frame = rs.colorizer().colorize(depth_frame)
             # Convert images to numpy arrays
             color_image = np.array(self.color_frame.get_data())
-            depth_image = np.array(depth_colorized_frame.get_data())
-            return ret, (color_image, depth_image)
+            depth_image = np.array(depth_frame.get_data())
+            depth_colorized_frame = cv2.applyColorMap(cv2.convertScaleAbs(depth_image, alpha=0.08), cv2.COLORMAP_JET)
+            return ret, (color_image, depth_colorized_frame)
 
     def release(self):
         # Stop streaming
         self.pipeline.stop()
-        print('pipline stopped')
+        print('pipeline stopped')
 
     def filtering(self, frame):
         '''Filter setting'''
