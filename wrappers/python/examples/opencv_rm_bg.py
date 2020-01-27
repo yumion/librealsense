@@ -50,7 +50,7 @@ try:
         images = np.hstack((bg_removed, depth_colormap))
 
         cv2.namedWindow('Align Example', cv2.WINDOW_AUTOSIZE)
-        cv2.imshow('RealSense', images)
+        cv2.imshow('Align Example', images)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break

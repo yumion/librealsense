@@ -46,12 +46,12 @@ class RealsenseCapture:
             # Get filtered depth frame
             depth_frame = self.filtering(self.depth_frame) if is_filtered else self.depth_frame
             # Express depth frame by heatmap
-            # depth_colorized_frame = rs.colorizer().colorize(depth_frame)
+            depth_colorized_frame = rs.colorizer().colorize(depth_frame)
             # Convert images to numpy arrays
             color_image = np.array(self.color_frame.get_data())
-            depth_image = np.array(depth_frame.get_data())
-            depth_colorized_frame = cv2.applyColorMap(cv2.convertScaleAbs(depth_image, alpha=0.08), cv2.COLORMAP_JET)
-            return ret, (color_image, depth_colorized_frame)
+            depth_image = np.array(depth_colorized_frame.get_data())
+            # depth_colorized_frame = cv2.applyColorMap(cv2.convertScaleAbs(depth_image, alpha=0.08), cv2.COLORMAP_JET)
+            return ret, (color_image, depth_image)
 
     def release(self):
         # Stop streaming
